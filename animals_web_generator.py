@@ -4,8 +4,6 @@ import json
 # Constants for API access
 API_KEY = "rkw1LvTjt+16MeGrEOvFzg==Whn03X2JW8DjG60q" # Replace with your actual key
 REQUESTED_URL = "https://api.api-ninjas.com/v1/animals"
-ANIMAL_TO_SEARCH = "fox" # Milestone 1: Search for "Fox"
-
 
 def serialize_animal(animal_obj):
     """ Takes a single animal dictionary and returns a formatted HTML card string. """
@@ -52,36 +50,36 @@ def serialize_animal(animal_obj):
 
 # Main Script
 
-# 1. Fetch Animal Data from API Ninja API
-print(f"Fetching data for '{ANIMAL_TO_SEARCH}' from API Ninja...")
+# 1. Get user input for the animal name
+# This replaces the old ANIMAL_TO_SEARCH = "Fox" constant
+animal_to_search = input("Enter a name of an animal: ") # Milestone 2
+
+# 2. Fetch Animal Data from API Ninja API
+print(f"Fetching data for '{animal_to_search}' from API Ninja...")
 animals_data = [] # Initialize as empty list
 
 # Prepare parameters and headers for the API request
-params_data = {"name": ANIMAL_TO_SEARCH}
+params_data = {"name": animal_to_search} # Use the variable from user input
 request_headers = {"X-Api-Key": API_KEY}
 
 try:
     # Make the GET request
     response = requests.get(REQUESTED_URL, params=params_data, headers=request_headers)
     response.raise_for_status() # Raise an exception for bad status codes (4xx or 5xx)
-    animals_data = response.json() # Parse the JSON response into a list of dictionaries
+    animals_data = response.json() # Parse the JSON response
 
     if not animals_data:
-        print(f"No animals found matching '{ANIMAL_TO_SEARCH}'.")
+        print(f"No animals found matching '{animal_to_search}'.")
     else:
         print(f"Successfully fetched {len(animals_data)} result(s).")
 
 except requests.exceptions.RequestException as e:
     print(f"Error fetching data from API: {e}")
-    # Optionally exit() or handle the error appropriately
 except json.JSONDecodeError:
     print("Error parsing JSON response from API.")
     print(f"Raw response text (first 200 chars): {response.text[:200]}...")
-    # Optionally exit() or handle the error appropriately
 
-# The rest of the script remains mostly the same
-
-# 2. Read the HTML template file (No change needed here)
+# 3. Read the HTML template file
 try:
     with open('animals_template.html', 'r', encoding='utf-8') as file:
         template_content = file.read()
@@ -89,21 +87,23 @@ except FileNotFoundError:
     print("Error: animals_template.html not found.")
     exit()
 
-# 3. Generate the HTML for all animals by looping and calling our function (No change needed here)
+# 4. Generate the HTML for all animals
 animals_info_string = ""
-if animals_data: # Only generate if data was successfully fetched and parsed
+if animals_data: # Only generate if data was successfully fetched
     for animal in animals_data:
         animals_info_string += serialize_animal(animal)
 else:
-    animals_info_string = "<p>Could not load animal data from the API.</p>" # Placeholder message
+    # Show a message if no data was fetched or found
+    animals_info_string = f"<p>No animal data found for '{animal_to_search}'.</p>"
 
-# 4. Replace the placeholder in the template with our generated string (No change needed here)
+# 5. Replace the placeholder in the template
 final_html_content = template_content.replace('__REPLACE_ANIMALS_INFO__', animals_info_string)
 
-# 5. Write the final content to a new HTML file (No change needed here)
+# 6. Write the final content to a new HTML file
 try:
     with open('animals.html', 'w', encoding='utf-8') as file:
         file.write(final_html_content)
-    print("Successfully created animals.html!")
+    # Changed the final print message to match the example
+    print("Website was successfully generated to the file animals.html.")
 except IOError as e:
     print(f"Error writing to animals.html: {e}")
