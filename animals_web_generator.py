@@ -94,7 +94,7 @@ if animals_data: # Only generate if data was successfully fetched
         animals_info_string += serialize_animal(animal)
 else:
     # Show a message if no data was fetched or found
-    animals_info_string = f"<p>No animal data found for '{animal_to_search}'.</p>"
+    animals_info_string = f"<h2>The animal '{animal_to_search}' doesn't exist.</h2>" # Milestone 3
 
 # 5. Replace the placeholder in the template
 final_html_content = template_content.replace('__REPLACE_ANIMALS_INFO__', animals_info_string)
