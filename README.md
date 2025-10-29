@@ -1,4 +1,4 @@
-Zootopia with API
+zootopia-api-project
 
 Description
 
